@@ -5,9 +5,7 @@ from web3 import (
 from web3.middleware.proof_of_authority import (
     ExtraDataToPOAMiddleware
     )
-
 from hexbytes import HexBytes
-import asyncio
 from typing import (
     Any,
     Optional,  
@@ -19,17 +17,11 @@ from eth_typing import (
 from web3.contract.contract import (
     Contract,
     ContractEvent,
-)
-from web3.contract.async_contract import (
-    
-    AsyncContract,
-    AsyncContractEvent
+    ContractFunction
 )
 from web3.types import (
     EventData,
-    TxReceipt,
     TxParams,
-    Wei,
     Nonce,
 )
 from web3._utils.events import (
@@ -127,6 +119,39 @@ class Web3WalletHTTP(Web3HTTP):
         return txn_params
     
     def create_txn_params_with_func(self,
-                                    func)
+                                    func:ContractFunction,
+                                    tx_params:TxParamsInput=TxParamsInput()) -> TxParams:
+        
+        txn_params:TxParams = self.create_txn_params(tx_params)
+        return func.build_transaction(txn_params)
+    
+    def build_txn(self,
+                  func:Optional[ContractFunction]=None,
+                  tx_params:TxParamsInput=TxParamsInput()) -> TxParams:
+        
+        if func is None:
+            return self.create_txn_params(tx_params)
+        else:
+            return self.create_txn_params_with_func(func, tx_params)
+    
+    def send_transaction(self, 
+                         txn:TxParams,
+                         waiting:bool=True) -> HexBytes:
+        signed_txn:SignedTransaction = self.w3.eth.account.sign_transaction(txn, self.__private_key)
+        txn_hash:HexBytes = self.w3.eth.send_raw_transaction(signed_txn.raw_transaction)
+        self.last_nonce = Nonce(int(txn.get('nonce',0)) + 1)
+        self.w3.eth.wait_for_transaction_receipt(txn_hash) if waiting else None
+        
+        return txn_hash
+    
+    def build_and_send_transaction(self,
+                                   func:Optional[ContractFunction]=None,
+                                   tx_params:TxParamsInput=TxParamsInput(),
+                                   waiting:bool=True) -> HexBytes:
+        
+        txn:TxParams = self.build_txn(func, tx_params)
+        return self.send_transaction(txn, waiting)
+    
+    
     
     
