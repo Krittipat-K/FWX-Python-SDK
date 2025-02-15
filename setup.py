@@ -12,5 +12,5 @@ setup(
         'web3==7.7.0',
         'python-dotenv==1.0.1'
     ],
-    python_requires='==3.11',
+    python_requires='>=3.9',
 )
