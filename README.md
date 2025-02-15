@@ -11,4 +11,4 @@ This SDK is not officially supported or endorsed by the FWX team. Use it at your
 To install the SDK, you can use pip:
 
 ```sh
-pip install fwx-python-sdk
+pip install git+https://github.com/Krittipat-K/FWX-Python-SDK
