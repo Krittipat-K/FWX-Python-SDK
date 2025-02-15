@@ -19,7 +19,8 @@ from web3.types import (
 )
 
 from .W3 import (
-    Web3HTTP
+    Web3HTTP,
+    Web3WalletHTTP
 )
 from .types import (
     AddressLike,
@@ -40,7 +41,8 @@ from .Constant import(
     FWX_PERP_CORE_ABI,
     FWX_PERP_CORE_ADDRESS_BASE,
     FWX_PERP_HELPER_ABI,
-    FWX_PERP_HELPER_ADDRESS_BASE
+    FWX_PERP_HELPER_ADDRESS_BASE,
+    MAX_UINT
 )
 
 class ERC20ContractBase(Web3HTTP):
@@ -145,7 +147,22 @@ class ERC20Contract(ERC20ContractBase):
                                        log_index=base_event_data.log_index,
                                        transaction_index=base_event_data.transaction_index,
                                        args=transfer_args)
-
+    def check_approval(self,
+                       wallet:Web3WalletHTTP,
+                       spender:ChecksumAddress,
+                       amount:int=MAX_UINT,) -> int:
+        
+        owner = wallet.wallet_address
+        allowance:int = self.get_allowance(owner,spender)
+        if allowance < amount:
+            print(f'Approve {amount} to {spender} from {owner}')
+            func = self.approve(spender,Wei(amount))
+            txn = wallet.build_and_send_transaction(func)
+            wallet.w3.eth.wait_for_transaction_receipt(txn)
+            return amount
+        
+        else:
+            return allowance
 class FWXMembershipContractBase(Web3HTTP):
     
     def __init__(self, 

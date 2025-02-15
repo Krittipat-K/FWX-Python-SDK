@@ -146,10 +146,10 @@ class Web3WalletHTTP(Web3HTTP):
     
     def build_and_send_transaction(self,
                                    func:Optional[ContractFunction]=None,
-                                   tx_params:TxParamsInput=TxParamsInput(),
+                                   tx_params_input:TxParamsInput=TxParamsInput(),
                                    waiting:bool=True) -> HexBytes:
         
-        txn:TxParams = self.build_txn(func, tx_params)
+        txn:TxParams = self.build_txn(func, tx_params_input)
         return self.send_transaction(txn, waiting)
     
     

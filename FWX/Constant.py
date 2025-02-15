@@ -8,6 +8,9 @@ FWX_MEMBERSHIP_ADDRESS_BASE = Web3.to_checksum_address("0xA273805161d0768F2B01ee
 FWX_PERP_CORE_ADDRESS_BASE = Web3.to_checksum_address("0xaf5a41Ad65752B3CFA9c7F90a516a1f7b3ccCdeD")
 FWX_PERP_HELPER_ADDRESS_BASE = Web3.to_checksum_address('0x8E8eF0aDC2D0901EA6A67B63400bBa6229F83174')
 
+USDC_BASE = Web3.to_checksum_address("0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913")
+USDC_AVALANCHE = Web3.to_checksum_address("0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e")
+
 PYTH_ID:dict[str,str] = {
             "BTC": "e62df6c8b4a85fe1a67db44dc12de5db330f7ac66b72dc658afedf0f4a415b43",
             "AVAX": "93da3352f9f1d105fdfe4971cfa80e9dd777bfc5d0f683ebb6e1294b92137bb7",
